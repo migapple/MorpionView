@@ -38,7 +38,7 @@ struct ParametresView: View {
     
     struct ParametresView_Previews: PreviewProvider {
         static var previews: some View {
-            ParametresView()
+            ParametresView().environmentObject(Settings())
         }
     }
 }

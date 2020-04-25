@@ -14,16 +14,15 @@ struct NavigationView: View {
     var body: some View {
         VStack {
             Text("TIC-TAC-TOE")
-            //            Text("QRCode de déplacement")
-            //            Text("Non validé par le gouvernement")
+                .font(.largeTitle)
+                .bold()
+            
             TabView {
                 ContentView()
                     .tabItem {
                         Image(systemName: "calendar")
                         Text("Jeux")
                 }
-                
-                
                 
                 ParametresView()
                     .tabItem {
