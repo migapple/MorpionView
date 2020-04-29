@@ -71,7 +71,6 @@ struct ContentView: View {
     var body: some View {
         let nbLineRaw = Int(settings.sliderValue)
         
-        
         var winComb : [[Int]] {
             if nbLineRaw == 3  {
                 return [[0,1,2],[3,4,5],[6,7,8], // Horizontal
@@ -103,14 +102,8 @@ struct ContentView: View {
             return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
         }
         
-        
         // MARK: - Affichage Score
         return VStack {
-//            Text("Tic Tac Toe")
-//                .font(.title)
-//                .fontWeight(.bold)
-//                .padding()
-            
             Text(affichage)
                 .font(.headline)
                 .padding()
@@ -207,18 +200,15 @@ struct ContentView: View {
     
     // MARK: - Joueur
     func Joueur(line: Int,  raw : Int, nbLineRaw: Int) {
-        //        quiJoue = .joueur
         if self.joueur[line][raw] == "vide" && gameIsActive {
             self.pion[line][raw] = "croix"
             self.joueur[line][raw] = "joueur"
             gameState[twoDimOneDim(line: line, raw: raw, nbLineRaw: nbLineRaw)] = .joueur
-            
         }
     }
     
     // MARK: - Ordinateur
     func ordinateur(nbLineRaw: Int) {
-        //        quiJoue = .ordi
         // Joue au hazard
         while true {
             let lineR = Int.random(in: 0...nbLineRaw - 1 )
@@ -235,7 +225,12 @@ struct ContentView: View {
     // MARK: - RAZ
     
     func raz(nbLineRaw: Int) {
+        // On remet à 0 les case jouées
         gameState = [QuiJoue](repeating: .vide, count: 64)
+        
+        self.partiesOrdi = 0
+        self.partiesJoueur = 0
+        
         for line in 0..<nbLineRaw {
             for raw in 0..<nbLineRaw {
                 pion[line][raw] = "vide"
@@ -295,17 +290,13 @@ struct ContentView: View {
                 //                buttonHidden = false
             }
         }
-        
     }
-        
     
     func twoDimOneDim(line: Int, raw: Int, nbLineRaw: Int) -> Int {
         let value = line * nbLineRaw + raw
         return value
     }
 }
-
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

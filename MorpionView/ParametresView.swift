@@ -9,12 +9,15 @@
 import SwiftUI
 
 class Settings: ObservableObject {
-    @Published var sliderValue: Float = 3.0
+    @Published var sliderValue: Float = UserDefaults.standard.float(forKey: "sliderValue") {
+        didSet {
+            UserDefaults.standard.set(self.sliderValue, forKey: "sliderValue")
+        }
+    }
 }
 
 struct ParametresView: View {
     @EnvironmentObject var settings: Settings
-    
     
     var body: some View {
         VStack {
@@ -29,11 +32,7 @@ struct ParametresView: View {
                 .padding()
             
             Text("Nbre de cases : \(Int(settings.sliderValue))")
-            
-//            UserDefaults.standard.set($settings.sliderValue, forKey: "sliderValue")
-
         }
-        
     }
     
     struct ParametresView_Previews: PreviewProvider {
