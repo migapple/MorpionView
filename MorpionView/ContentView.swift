@@ -27,16 +27,18 @@ enum Niveau: Int {
     case dur
 }
 
+struct Dame {
+    var place : String
+    var couleur: Color
+}
+
 var damier = [
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"],
-    ["vide","vide","vide","vide","vide","vide","vide","vide","vide"]
+    [Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange)],
+    [Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange)],
+    [Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange)],
+    [Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange)],
+    [Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange)],
+    [Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange),Dame(place: "vide", couleur: .orange)]
 ]
 
 var pris = [
@@ -140,12 +142,21 @@ struct ContentView: View {
                                 
                             }) {
                                 HStack(spacing: 12) {
-                                    Image(self.pion[line][raw])
+                                    if self.pion[line][raw].couleur == Color.orange {
+                                    Image(self.pion[line][raw].place)
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
                                         .frame(width: (self.smbs.width - 50) / CGFloat(nbLineRaw) , height: (self.smbs.width - 50) / CGFloat(nbLineRaw))
                                         .background(Color.orange)
+                                    } else {
+                                        Image(self.pion[line][raw].place)
+                                        .renderingMode(.original)
+                                        .resizable()
+                                        .padding(5)
+                                        .frame(width: (self.smbs.width - 50) / CGFloat(nbLineRaw) , height: (self.smbs.width - 50) / CGFloat(nbLineRaw))
+                                        .background(Color.green)
+                                    }
                                 }
                             }
                         }
@@ -201,7 +212,7 @@ struct ContentView: View {
     // MARK: - Joueur
     func Joueur(line: Int,  raw : Int, nbLineRaw: Int) {
         if self.joueur[line][raw] == "vide" && gameIsActive {
-            self.pion[line][raw] = "croix"
+            self.pion[line][raw].place = "croix"
             self.joueur[line][raw] = "joueur"
             gameState[twoDimOneDim(line: line, raw: raw, nbLineRaw: nbLineRaw)] = .joueur
         }
@@ -214,7 +225,7 @@ struct ContentView: View {
             let lineR = Int.random(in: 0...nbLineRaw - 1 )
             let rawR = Int.random(in: 0...nbLineRaw - 1 )
             if self.joueur[lineR][rawR] == "vide" && gameIsActive {
-                self.pion[lineR][rawR] = "rond"
+                self.pion[lineR][rawR].place = "rond"
                 self.joueur[lineR][rawR] = "ordi"
                 gameState[twoDimOneDim(line: lineR, raw: rawR, nbLineRaw: nbLineRaw)] = .ordi
                 break
@@ -233,7 +244,8 @@ struct ContentView: View {
         
         for line in 0..<nbLineRaw {
             for raw in 0..<nbLineRaw {
-                pion[line][raw] = "vide"
+                pion[line][raw].place = "vide"
+                pion[line][raw].couleur = .orange
                 joueur[line][raw] = "vide"
                 affichage = ""
                 nbPionOrdi = 0
@@ -257,14 +269,24 @@ struct ContentView: View {
             }
             
             if nbJoueur == nbLineRaw {
+                for i in 0..<nbLineRaw {
+                    let indices = twoDim(nombre: combination[i])
+                    pion[indices.ind1][indices.ind2].couleur = .green
+                }
                 // Cross has won
                 affichage = "Les croix on gagné"
+                
                 partiesJoueur += 1
                 UserDefaults.standard.set(self.partiesJoueur, forKey: "partiesJoueur")
                 gameIsActive = false
-                
+                pion[0][0].couleur = .green
                 
             } else if nbOrdi == nbLineRaw {
+                for i in 0..<nbLineRaw {
+                    let indices = twoDim(nombre: combination[i])
+                    print(indices)
+                    pion[indices.ind1][indices.ind2].couleur = .green
+                }
                 // Nought has won
                 affichage = "Les ronds on gagné"
                 partiesOrdi += 1
@@ -273,12 +295,12 @@ struct ContentView: View {
             }
         }
         
-        // Si toutes les case ssont jouées
+        // Si toutes les case sont jouées
         if gameIsActive {
             var caseLibre = false
             for line in 0..<nbLineRaw {
                 for raw in 0..<nbLineRaw {
-                    if pion[line][raw] == "vide" {
+                    if pion[line][raw].place == "vide" {
                         caseLibre = true
                         break
                     }
@@ -295,6 +317,24 @@ struct ContentView: View {
     func twoDimOneDim(line: Int, raw: Int, nbLineRaw: Int) -> Int {
         let value = line * nbLineRaw + raw
         return value
+    }
+    
+    // MARK: - Converti une dimension en 2 dimentions
+    func twoDim(nombre: Int) -> (ind1:Int, ind2:Int) {
+        var ind1 = 0
+        var ind2 = 0
+        if nombre < 3 {
+            ind1 = 0
+            ind2 = nombre
+        } else if nombre < 6 {
+            ind1 = 1
+            ind2 = nombre - 3
+        } else if nombre < 9 {
+            ind1 = 2
+            ind2 = nombre - 6
+        }
+        
+        return (ind1, ind2)
     }
 }
 
