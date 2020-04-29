@@ -278,27 +278,26 @@ struct ContentView: View {
             }
         }
         
-        // Si on n'a pas une combinaison gagnante
+        // Si toutes les case ssont jouées
         if gameIsActive {
-            self.gameIsActive = false
-            
-            // On regarde s'il reste des places non jouées
-            for i in self.gameState {
-                if i == .vide {
-                    gameIsActive = true
-                    break
+            var caseLibre = false
+            for line in 0..<nbLineRaw {
+                for raw in 0..<nbLineRaw {
+                    if pion[line][raw] == "vide" {
+                        caseLibre = true
+                        break
+                    }
                 }
             }
             
-            if gameIsActive == false {
+            if caseLibre == false {
                 affichage = "Plus de combinaisons"
                 //                buttonHidden = false
-            } else {
-                 affichage = "Personne n'a gagné"
             }
         }
         
     }
+        
     
     func twoDimOneDim(line: Int, raw: Int, nbLineRaw: Int) -> Int {
         let value = line * nbLineRaw + raw
