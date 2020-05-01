@@ -62,7 +62,7 @@ struct ContentView: View {
     @State private var partiesOrdi = UserDefaults.standard.integer(forKey: "partiesOrdi")
     @State private var selectionNiveau = Niveau.moyen.rawValue
     @State private var quiDemarre = false
-    //    @State private var quiJoue =  J.vide
+    @State private var quiJoue =  QuiJoue.vide
     @State private var nbPionJoueur = 0
     @State private var nbPionOrdi = 0
     @State private var gameIsActive = true
@@ -124,17 +124,17 @@ struct ContentView: View {
                             Button(action: {
                                 
                                 // Si le jeux est actif, le Joueur Joue
-                                if self.gameIsActive {
-                                    self.Joueur(line:line, raw: raw, nbLineRaw: nbLineRaw)
+                                if self.gameIsActive && self.quiJoue == .joueur {
+                                    self.joueurJoue(line:line, raw: raw, nbLineRaw: nbLineRaw)
+                                    
+                                    // On teste si quelqu'un a gagne
+                                    self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
                                 }
                                 
-                                // On teste si quelqu'un a gagne
-                                self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
-                                
                                 // Si le jeux est actif, l'ordinateur joue apres 1s
-                                if self.gameIsActive {
+                                if self.gameIsActive && self.quiJoue == .ordi {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                                        self.ordinateur(nbLineRaw: nbLineRaw)
+                                        self.ordinateurJoue(nbLineRaw: nbLineRaw)
                                         // On teste si quelqu'un a gagne
                                         self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
                                     })
@@ -182,13 +182,17 @@ struct ContentView: View {
                 .padding()
             }
             
-            // MARK: - Qui Demarre
+            // MARK: - Jouer
             HStack {
                 // true si l'ordinateur demarre
                 Button(action: {
+                    // Ordinateur
                     if self.quiDemarre == true {
                         self.gameIsActive = true
-                        self.ordinateur(nbLineRaw: nbLineRaw)
+                        self.ordinateurJoue(nbLineRaw: nbLineRaw)
+                    } else {
+                        self.quiJoue = .joueur
+                        self.gameIsActive = true
                     }
                 }) {
                     Text("Jouer")
@@ -210,16 +214,17 @@ struct ContentView: View {
     }
     
     // MARK: - Joueur
-    func Joueur(line: Int,  raw : Int, nbLineRaw: Int) {
+    func joueurJoue(line: Int,  raw : Int, nbLineRaw: Int) {
         if self.joueur[line][raw] == "vide" && gameIsActive {
             self.pion[line][raw].place = "croix"
             self.joueur[line][raw] = "joueur"
             gameState[twoDimOneDim(line: line, raw: raw, nbLineRaw: nbLineRaw)] = .joueur
+            quiJoue = .ordi
         }
     }
     
     // MARK: - Ordinateur
-    func ordinateur(nbLineRaw: Int) {
+    func ordinateurJoue(nbLineRaw: Int) {
         // Joue au hazard
         while true {
             let lineR = Int.random(in: 0...nbLineRaw - 1 )
@@ -228,6 +233,7 @@ struct ContentView: View {
                 self.pion[lineR][rawR].place = "rond"
                 self.joueur[lineR][rawR] = "ordi"
                 gameState[twoDimOneDim(line: lineR, raw: rawR, nbLineRaw: nbLineRaw)] = .ordi
+                quiJoue = .joueur
                 break
             }
         }
@@ -270,7 +276,7 @@ struct ContentView: View {
             
             if nbJoueur == nbLineRaw {
                 for i in 0..<nbLineRaw {
-                    let indices = twoDim(nombre: combination[i])
+                    let indices = twoDim(nombre: combination[i], nbLineRaw: nbLineRaw)
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
                 // Cross has won
@@ -283,8 +289,7 @@ struct ContentView: View {
                 
             } else if nbOrdi == nbLineRaw {
                 for i in 0..<nbLineRaw {
-                    let indices = twoDim(nombre: combination[i])
-                    print(indices)
+                    let indices = twoDim(nombre: combination[i], nbLineRaw: nbLineRaw)
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
                 // Nought has won
@@ -320,18 +325,27 @@ struct ContentView: View {
     }
     
     // MARK: - Converti une dimension en 2 dimentions
-    func twoDim(nombre: Int) -> (ind1:Int, ind2:Int) {
+    func twoDim(nombre: Int, nbLineRaw: Int) -> (ind1:Int, ind2:Int) {
         var ind1 = 0
         var ind2 = 0
-        if nombre < 3 {
+        if nombre < nbLineRaw {
             ind1 = 0
             ind2 = nombre
-        } else if nombre < 6 {
+        } else if nombre < nbLineRaw * 2 {
             ind1 = 1
-            ind2 = nombre - 3
-        } else if nombre < 9 {
+            ind2 = nombre - nbLineRaw
+        } else if nombre < nbLineRaw * 3 {
             ind1 = 2
-            ind2 = nombre - 6
+            ind2 = nombre - nbLineRaw * 2
+        } else if nombre < nbLineRaw * 4 {
+            ind1 = 3
+            ind2 = nombre - nbLineRaw * 3
+        } else if nombre < nbLineRaw * 5 {
+            ind1 = 4
+            ind2 = nombre - nbLineRaw * 4
+        }else if nombre < nbLineRaw * 6 {
+            ind1 = 5
+            ind2 = nombre - nbLineRaw * 5
         }
         
         return (ind1, ind2)
