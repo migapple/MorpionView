@@ -163,6 +163,9 @@ struct ContentView: View {
                     }
                 }
             }
+            .onDisappear{
+                self.raz(nbLineRaw: nbLineRaw)
+            }
             
             
             // MARK: - Parametres
@@ -187,9 +190,10 @@ struct ContentView: View {
                 // true si l'ordinateur demarre
                 Button(action: {
                     // Ordinateur
-                    if self.quiDemarre == true {
+                    if self.quiDemarre == true && self.quiJoue == .ordi {
                         self.gameIsActive = true
                         self.ordinateurJoue(nbLineRaw: nbLineRaw)
+                        
                     } else {
                         self.quiJoue = .joueur
                         self.gameIsActive = true
