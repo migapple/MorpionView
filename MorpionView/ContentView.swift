@@ -61,8 +61,8 @@ struct ContentView: View {
     @State private var partiesJoueur = UserDefaults.standard.integer(forKey: "partiesJoueur")
     @State private var partiesOrdi = UserDefaults.standard.integer(forKey: "partiesOrdi")
     @State private var selectionNiveau = Niveau.moyen.rawValue
-    @State private var quiDemarre = false
-    @State private var quiJoue =  QuiJoue.vide
+    @State private var quiDemarre1 = false
+    @State private var quiJoue =  false
     @State private var nbPionJoueur = 0
     @State private var nbPionOrdi = 0
     @State private var gameIsActive = true
@@ -72,6 +72,10 @@ struct ContentView: View {
     
     var body: some View {
         let nbLineRaw = Int(settings.sliderValue)
+        
+        // On modifie qui joue en fonction de qui demarre
+        let quiDemarre = Binding<Bool>(get: {self.quiDemarre1}, set: {self.quiDemarre1 = $0; self.quiJoue = true })
+        
         
         var winComb : [[Int]] {
             if nbLineRaw == 3  {
@@ -106,6 +110,8 @@ struct ContentView: View {
         
         // MARK: - Affichage Score
         return VStack {
+            Text("Tic Tac Toe")
+                .font(.largeTitle)
             Text(affichage)
                 .font(.headline)
                 .padding()
@@ -124,7 +130,7 @@ struct ContentView: View {
                             Button(action: {
                                 
                                 // Si le jeux est actif, le Joueur Joue
-                                if self.gameIsActive && self.quiJoue == .joueur {
+                                if self.gameIsActive && self.quiJoue == false {
                                     self.joueurJoue(line:line, raw: raw, nbLineRaw: nbLineRaw)
                                     
                                     // On teste si quelqu'un a gagne
@@ -132,7 +138,7 @@ struct ContentView: View {
                                 }
                                 
                                 // Si le jeux est actif, l'ordinateur joue apres 1s
-                                if self.gameIsActive && self.quiJoue == .ordi {
+                                if self.gameIsActive && self.quiJoue == true {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
                                         self.ordinateurJoue(nbLineRaw: nbLineRaw)
                                         // On teste si quelqu'un a gagne
@@ -167,13 +173,11 @@ struct ContentView: View {
                 self.raz(nbLineRaw: nbLineRaw)
             }
             
-            
             // MARK: - Parametres
             HStack {
-                Toggle(isOn: $quiDemarre) {
+                Toggle(isOn: quiDemarre) {
                     Text("Joueur/Ordi")
                 }
-                    
                 .padding()
                 
                 Picker(selection: $selectionNiveau, label: /*@START_MENU_TOKEN@*/Text("Picker")/*@END_MENU_TOKEN@*/) {
@@ -187,32 +191,55 @@ struct ContentView: View {
             
             // MARK: - Jouer
             HStack {
+                
+//                Toggle(isOn: $quiJoue) {
+//                    if quiJoue == true {
+//                        Text("Ordinateur")
+//                    } else
+//                }
+                
                 // true si l'ordinateur demarre
                 Button(action: {
                     // Ordinateur
-                    if self.quiDemarre == true && self.quiJoue == .ordi {
+                    if self.quiDemarre1 == true && self.quiJoue == true {
                         self.gameIsActive = true
                         self.ordinateurJoue(nbLineRaw: nbLineRaw)
+                        self.quiJoue = false
                         
                     } else {
-                        self.quiJoue = .joueur
+                        self.quiJoue = false
                         self.gameIsActive = true
                     }
                 }) {
-                    Text("Jouer")
-                        .padding(.top, 20)
-                        .clipped()
+                    HStack(spacing: 30) {
+                        
+                        if quiJoue {
+                            Text("Ordinateur")
+                            .foregroundColor(Color.red)
+                            .frame(width: UIScreen.main.bounds.width/4, height: 20)
+
+                        } else {
+                            Text("Joueur")
+                                .foregroundColor(Color.green)
+                            .frame(width: UIScreen.main.bounds.width/4, height: 20)
+                        }
+                        
+                        Text("Jouer")
+                            .frame(width: UIScreen.main.bounds.width/5, height: 20)
+                            .foregroundColor(Color.white)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10.0)
+                    }
                 }
-                
                 
                 Button(action: {
                     self.raz(nbLineRaw: nbLineRaw)
                 }) {
                     Text("Raz")
                         .font(.body)
-                        .padding(.top, 20)
-                        .clipped()
                 }
+                .buttonStyle(CustomButtonStyle())
             }
         }
     }
@@ -223,7 +250,7 @@ struct ContentView: View {
             self.pion[line][raw].place = "croix"
             self.joueur[line][raw] = "joueur"
             gameState[twoDimOneDim(line: line, raw: raw, nbLineRaw: nbLineRaw)] = .joueur
-            quiJoue = .ordi
+            quiJoue = true
         }
     }
     
@@ -237,7 +264,7 @@ struct ContentView: View {
                 self.pion[lineR][rawR].place = "rond"
                 self.joueur[lineR][rawR] = "ordi"
                 gameState[twoDimOneDim(line: lineR, raw: rawR, nbLineRaw: nbLineRaw)] = .ordi
-                quiJoue = .joueur
+                quiJoue = false
                 break
             }
         }
@@ -284,7 +311,7 @@ struct ContentView: View {
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
                 // Cross has won
-                affichage = "Les croix on gagné"
+                affichage = "Le Joueur gagné"
                 
                 partiesJoueur += 1
                 UserDefaults.standard.set(self.partiesJoueur, forKey: "partiesJoueur")
@@ -297,7 +324,7 @@ struct ContentView: View {
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
                 // Nought has won
-                affichage = "Les ronds on gagné"
+                affichage = "L'Ordinateur a gagné"
                 partiesOrdi += 1
                 UserDefaults.standard.set(self.partiesOrdi, forKey: "partiesOrdi")
                 gameIsActive = false

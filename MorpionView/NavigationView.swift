@@ -13,9 +13,6 @@ struct NavigationView: View {
     
     var body: some View {
         VStack {
-            Text("TIC-TAC-TOE")
-                .font(.largeTitle)
-                .bold()
             
             TabView {
                 ContentView()
