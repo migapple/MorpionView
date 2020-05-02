@@ -54,6 +54,7 @@ var pris = [
 ]
 
 struct ContentView: View {
+    let colors = [Color("Color"), Color("Color1")]
     @EnvironmentObject var settings: Settings
     @State var pion = damier
     @State var joueur = pris
@@ -237,9 +238,10 @@ struct ContentView: View {
                     self.raz(nbLineRaw: nbLineRaw)
                 }) {
                     Text("Raz")
-                        .font(.body)
+//                        .font(.body)
                 }
-                .buttonStyle(CustomButtonStyle())
+                    .frame(width: UIScreen.main.bounds.width/5, height: 50)
+                .background(Capsule().stroke(LinearGradient(gradient: .init(colors: colors), startPoint: .leading, endPoint: .trailing), lineWidth: 2))
             }
         }
     }
