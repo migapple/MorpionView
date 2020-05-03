@@ -14,7 +14,15 @@ class Settings: ObservableObject {
             UserDefaults.standard.set(self.sliderValue, forKey: "sliderValue")
         }
     }
+    
+    @Published var soundActive: Bool = UserDefaults.standard.bool(forKey: "soundActive") {
+        
+        didSet {
+            UserDefaults.standard.set(self.sliderValue, forKey: "soundActive")
+        }
+    }
 }
+
 
 struct ParametresView: View {
     @EnvironmentObject var settings: Settings
@@ -31,7 +39,13 @@ struct ParametresView: View {
                 .border(Color.green, width: 2)
                 .padding()
             
-            Text("Nbre de cases : \(Int(settings.sliderValue))")
+            Text("Nbre de cases : \(Int(settings.sliderValue)) X \(Int(settings.sliderValue))")
+            
+            Spacer()
+            
+            Toggle(isOn: $settings.soundActive) {
+                Text("Sound Active")
+            }
         }
     }
     

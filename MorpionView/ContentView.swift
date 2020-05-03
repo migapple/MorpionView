@@ -68,6 +68,7 @@ struct ContentView: View {
     @State private var nbPionOrdi = 0
     @State private var gameIsActive = true
     @State private var gameState = [QuiJoue](repeating: .vide, count: 64)
+    @State var hidePlayButton = false
     
     let smbs = UIScreen.main.bounds.size
     
@@ -75,9 +76,9 @@ struct ContentView: View {
         let nbLineRaw = Int(settings.sliderValue)
         
         // On modifie qui joue en fonction de qui demarre
-        let quiDemarre = Binding<Bool>(get: {self.quiDemarre1}, set: {self.quiDemarre1 = $0; self.quiJoue = true })
+        let quiDemarre = Binding<Bool>(get: {self.quiDemarre1}, set: {self.quiDemarre1 = $0; self.quiJoue = $0 })
         
-        
+        // Combinaisons Gagnantes
         var winComb : [[Int]] {
             if nbLineRaw == 3  {
                 return [[0,1,2],[3,4,5],[6,7,8], // Horizontal
@@ -123,12 +124,15 @@ struct ContentView: View {
                     .font(.headline)
             }
             
-            // MARK: - Affichage Damier
+            // MARK: - Affichage Damier et boucle de départ
             VStack {
                 ForEach(0..<nbLineRaw) { line in
                     HStack {
                         ForEach(0..<nbLineRaw) { raw in
                             Button(action: {
+                                
+                                // On teste si quelqu'un a gagne
+                                self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
                                 
                                 // Si le jeux est actif, le Joueur Joue
                                 if self.gameIsActive && self.quiJoue == false {
@@ -190,52 +194,43 @@ struct ContentView: View {
                 .padding()
             }
             
+            Text(quiJoue ? "Ordinateur" : "Joueur")
+                .padding()
+                .foregroundColor(quiJoue ? Color.red : Color.green)
+                .font(.headline)
+            
+            
             // MARK: - Jouer
             HStack {
-                
-//                Toggle(isOn: $quiJoue) {
-//                    if quiJoue == true {
-//                        Text("Ordinateur")
-//                    } else
-//                }
-                
                 // true si l'ordinateur demarre
-                Button(action: {
-                    // Ordinateur
-                    if self.quiDemarre1 == true && self.quiJoue == true {
-                        self.gameIsActive = true
-                        self.ordinateurJoue(nbLineRaw: nbLineRaw)
-                        self.quiJoue = false
-                        
-                    } else {
-                        self.quiJoue = false
-                        self.gameIsActive = true
-                    }
-                }) {
-                    HStack(spacing: 30) {
-                        
-                        if quiJoue {
-                            Text("Ordinateur")
-                            .foregroundColor(Color.red)
-                            .frame(width: UIScreen.main.bounds.width/4, height: 20)
-
+                    Button(action: {
+                        // Ordinateur
+                        if self.quiDemarre1 == true && self.quiJoue == true {
+                            self.gameIsActive = true
+                            self.ordinateurJoue(nbLineRaw: nbLineRaw)
+                            self.quiJoue = false
+                            
                         } else {
-                            Text("Joueur")
-                                .foregroundColor(Color.green)
-                            .frame(width: UIScreen.main.bounds.width/4, height: 20)
+                            self.quiJoue = false
+                            self.gameIsActive = true
                         }
                         
+                        self.hidePlayButton = true
+                        
+                    }) {
+                        if !self.hidePlayButton {
                         Text("Jouer")
                             .frame(width: UIScreen.main.bounds.width/5, height: 20)
-                            .foregroundColor(Color.white)
+                            .foregroundColor(Color.black)
                             .padding()
-                            .background(Color.blue)
+                            .background(Color("Color1"))
                             .cornerRadius(10.0)
+                        }
                     }
-                }
                 
                 Button(action: {
                     self.raz(nbLineRaw: nbLineRaw)
+                    self.hidePlayButton = false
                 }) {
                     Text("Raz")
 //                        .font(.body)
@@ -310,23 +305,29 @@ struct ContentView: View {
             if nbJoueur == nbLineRaw {
                 for i in 0..<nbLineRaw {
                     let indices = twoDim(nombre: combination[i], nbLineRaw: nbLineRaw)
+                    print(indices)
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
                 // Cross has won
                 affichage = "Le Joueur gagné"
+                 self.hidePlayButton = false
+                playSound(sound: "riseup", type: "mp3")
                 
                 partiesJoueur += 1
                 UserDefaults.standard.set(self.partiesJoueur, forKey: "partiesJoueur")
                 gameIsActive = false
-                pion[0][0].couleur = .green
                 
             } else if nbOrdi == nbLineRaw {
                 for i in 0..<nbLineRaw {
                     let indices = twoDim(nombre: combination[i], nbLineRaw: nbLineRaw)
+                    print(indices)
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
                 // Nought has won
                 affichage = "L'Ordinateur a gagné"
+                 self.hidePlayButton = false
+                playSound(sound: "spin", type: "mp3")
+                
                 partiesOrdi += 1
                 UserDefaults.standard.set(self.partiesOrdi, forKey: "partiesOrdi")
                 gameIsActive = false

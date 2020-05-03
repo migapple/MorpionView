@@ -26,11 +26,24 @@ struct NavigationView: View {
                         Image(systemName: "gear")
                         Text("Paramétrage")
                 }
+                
+                HelpView()
+                    .tabItem {
+                        Image(systemName: "questionmark.circle")
+                        Text("Aide")
+                }
+                .onAppear {
+                    playSound(sound: "background-music", type: "mp3")
+                }
+                .onDisappear {
+                    audioPlayer?.stop()
+                }
             }
             .onAppear {
                 guard let Retreive1 = UserDefaults.standard.value(forKey: "sliderValue") else { return }
                 self.settings.sliderValue = Float(Retreive1 as! CGFloat)
             }
+                
         }
     }
 }
