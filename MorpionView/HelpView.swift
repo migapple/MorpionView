@@ -9,12 +9,16 @@
 import SwiftUI
 
 struct HelpView: View {
+    @EnvironmentObject var settings: Settings
+    
     var body: some View {
         VStack {
             Text("Aide")
         }
         .onAppear(perform: {
-            playSound(sound: "background-music", type: "mp")
+            if self.settings.soundActive {
+            playSound(sound: "background-music", type: "mp3")
+            }
         })
     }
 }

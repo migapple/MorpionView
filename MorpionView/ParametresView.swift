@@ -41,11 +41,13 @@ struct ParametresView: View {
             
             Text("Nbre de cases : \(Int(settings.sliderValue)) X \(Int(settings.sliderValue))")
             
-            Spacer()
             
             Toggle(isOn: $settings.soundActive) {
-                Text("Sound Active")
+                Text(settings.soundActive ? "Sound Active" : "Sound Inactive")
             }
+            .padding()
+            
+            Spacer()
         }
     }
     

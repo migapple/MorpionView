@@ -180,10 +180,11 @@ struct ContentView: View {
             
             // MARK: - Parametres
             HStack {
-                Toggle(isOn: quiDemarre) {
-                    Text("Joueur/Ordi")
+                Toggle(isOn: $quiDemarre1) {
+                    Text(quiDemarre.wrappedValue ? "Ordinateur commence" : "Joueur commence")
                 }
-                .padding()
+//                .padding()
+                .hueRotation(Angle.degrees(45))
                 
                 Picker(selection: $selectionNiveau, label: /*@START_MENU_TOKEN@*/Text("Picker")/*@END_MENU_TOKEN@*/) {
                     Text("Facile").tag(1)
@@ -220,11 +221,12 @@ struct ContentView: View {
                     }) {
                         if !self.hidePlayButton {
                         Text("Jouer")
+                            .font(.headline)
                             .frame(width: UIScreen.main.bounds.width/5, height: 20)
-                            .foregroundColor(Color.black)
                             .padding()
-                            .background(Color("Color1"))
-                            .cornerRadius(10.0)
+                            .background(Color.orange)
+                            .foregroundColor(.white)
+                            .cornerRadius(5)
                         }
                     }
                 
@@ -233,10 +235,13 @@ struct ContentView: View {
                     self.hidePlayButton = false
                 }) {
                     Text("Raz")
-//                        .font(.body)
+                        .frame(width: UIScreen.main.bounds.width/5, height: 20)
+                        .foregroundColor(.orange)
+                        .font(.headline)
+                        .padding()
+                        .border(Color.orange, width: 5)
+                        .cornerRadius(5)
                 }
-                    .frame(width: UIScreen.main.bounds.width/5, height: 50)
-                .background(Capsule().stroke(LinearGradient(gradient: .init(colors: colors), startPoint: .leading, endPoint: .trailing), lineWidth: 2))
             }
         }
     }
@@ -268,7 +273,6 @@ struct ContentView: View {
     }
     
     // MARK: - RAZ
-    
     func raz(nbLineRaw: Int) {
         // On remet à 0 les case jouées
         gameState = [QuiJoue](repeating: .vide, count: 64)
@@ -311,7 +315,9 @@ struct ContentView: View {
                 // Cross has won
                 affichage = "Le Joueur gagné"
                  self.hidePlayButton = false
-                playSound(sound: "riseup", type: "mp3")
+                if settings.soundActive {
+                    playSound(sound: "riseup", type: "mp3")
+                }
                 
                 partiesJoueur += 1
                 UserDefaults.standard.set(self.partiesJoueur, forKey: "partiesJoueur")
@@ -326,7 +332,9 @@ struct ContentView: View {
                 // Nought has won
                 affichage = "L'Ordinateur a gagné"
                  self.hidePlayButton = false
+                if settings.soundActive {
                 playSound(sound: "spin", type: "mp3")
+                }
                 
                 partiesOrdi += 1
                 UserDefaults.standard.set(self.partiesOrdi, forKey: "partiesOrdi")
