@@ -18,7 +18,7 @@ class Settings: ObservableObject {
     @Published var soundActive: Bool = UserDefaults.standard.bool(forKey: "soundActive") {
         
         didSet {
-            UserDefaults.standard.set(self.sliderValue, forKey: "soundActive")
+            UserDefaults.standard.set(self.soundActive, forKey: "soundActive")
         }
     }
 }
@@ -43,7 +43,7 @@ struct ParametresView: View {
             
             
             Toggle(isOn: $settings.soundActive) {
-                Text(settings.soundActive ? "Sound Active" : "Sound Inactive")
+                Text(settings.soundActive ? "Sons Actifs" : "Sons Inactifs")
             }
             .padding()
             

@@ -54,7 +54,6 @@ var pris = [
 ]
 
 struct ContentView: View {
-    let colors = [Color("Color"), Color("Color1")]
     @EnvironmentObject var settings: Settings
     @State var pion = damier
     @State var joueur = pris
@@ -145,7 +144,10 @@ struct ContentView: View {
                                 // Si le jeux est actif, l'ordinateur joue apres 1s
                                 if self.gameIsActive && self.quiJoue == true {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                                        self.ordinateurJoue(nbLineRaw: nbLineRaw)
+                                        let trouve = self.chercheCombinaison(joueur: 0, winComb: winComb, nbLineRaw: nbLineRaw)
+                                        if !trouve {
+                                            self.ordinateurJoueHasard(nbLineRaw: nbLineRaw)
+                                        }
                                         // On teste si quelqu'un a gagne
                                         self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
                                     })
@@ -180,11 +182,10 @@ struct ContentView: View {
             
             // MARK: - Parametres
             HStack {
-                Toggle(isOn: $quiDemarre1) {
+                Toggle(isOn: quiDemarre) {
                     Text(quiDemarre.wrappedValue ? "Ordinateur commence" : "Joueur commence")
                 }
-//                .padding()
-                .hueRotation(Angle.degrees(45))
+                .padding()
                 
                 Picker(selection: $selectionNiveau, label: /*@START_MENU_TOKEN@*/Text("Picker")/*@END_MENU_TOKEN@*/) {
                     Text("Facile").tag(1)
@@ -192,14 +193,23 @@ struct ContentView: View {
                     Text("Dur").tag(3)
                 }
                 .pickerStyle(SegmentedPickerStyle())
+                .foregroundColor(Color.orange)
                 .padding()
             }
             
-            Text(quiJoue ? "Ordinateur" : "Joueur")
-                .padding()
-                .foregroundColor(quiJoue ? Color.red : Color.green)
-                .font(.headline)
-            
+            if quiJoue == true {
+                Image(systemName: "desktopcomputer")
+                .resizable()
+                .frame(width: 40, height: 40)
+                    .foregroundColor(.orange)
+            }  else {
+                Image(systemName: "person.fill")
+                .resizable()
+                .frame(width: 40, height: 40)
+                .foregroundColor(.orange)
+
+            }
+
             
             // MARK: - Jouer
             HStack {
@@ -208,7 +218,7 @@ struct ContentView: View {
                         // Ordinateur
                         if self.quiDemarre1 == true && self.quiJoue == true {
                             self.gameIsActive = true
-                            self.ordinateurJoue(nbLineRaw: nbLineRaw)
+                            self.ordinateurJoueHasard(nbLineRaw: nbLineRaw)
                             self.quiJoue = false
                             
                         } else {
@@ -256,8 +266,18 @@ struct ContentView: View {
         }
     }
     
-    // MARK: - Ordinateur
-    func ordinateurJoue(nbLineRaw: Int) {
+    // MARK: - Joueur
+    func OrdinateurJoue(line: Int,  raw : Int, nbLineRaw: Int) {
+        if self.joueur[line][raw] == "vide" && gameIsActive {
+            self.pion[line][raw].place = "rond"
+            self.joueur[line][raw] = "ordi"
+            gameState[twoDimOneDim(line: line, raw: raw, nbLineRaw: nbLineRaw)] = .ordi
+            quiJoue = false
+        }
+    }
+    
+    // MARK: - Ordinateur joue au Hasard
+    func ordinateurJoueHasard(nbLineRaw: Int) {
         // Joue au hazard
         while true {
             let lineR = Int.random(in: 0...nbLineRaw - 1 )
@@ -331,9 +351,9 @@ struct ContentView: View {
                 }
                 // Nought has won
                 affichage = "L'Ordinateur a gagné"
-                 self.hidePlayButton = false
+                self.hidePlayButton = false
                 if settings.soundActive {
-                playSound(sound: "spin", type: "mp3")
+                    playSound(sound: "spin", type: "mp3")
                 }
                 
                 partiesOrdi += 1
@@ -356,7 +376,11 @@ struct ContentView: View {
             
             if caseLibre == false {
                 affichage = "Plus de combinaisons"
-                //                buttonHidden = false
+                
+                if settings.soundActive {
+                    playSound(sound: "game-over", type: "mp3")
+                }
+                self.hidePlayButton = false
             }
         }
     }
@@ -391,6 +415,34 @@ struct ContentView: View {
         }
         
         return (ind1, ind2)
+    }
+    
+    func chercheCombinaison(joueur: Int, winComb: [[Int]], nbLineRaw: Int) -> Bool {
+        var trouve = false
+        
+        for combination in winComb {
+            // Une conbinaison trouvée
+            var nbState = 0
+
+            for index in 0..<nbLineRaw {
+                if gameState[combination[index]] == .ordi { nbState += 1}
+            }
+
+            // Ligne presque terminée
+            if nbState == nbLineRaw - 1 {
+                var j = 0
+                for _ in combination {
+                    if gameState[combination[j]] == .vide {
+                        let indices = twoDim(nombre: combination[j], nbLineRaw: nbLineRaw)
+                        OrdinateurJoue(line: indices.ind1, raw: indices.ind2, nbLineRaw: nbLineRaw)
+                        trouve = true
+                    }
+                    j += 1
+                }
+            }
+        }
+        
+        return trouve
     }
 }
 

@@ -15,7 +15,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-//        UISwitch.appearance().onTintColor = .orange
+        UISwitch.appearance().onTintColor = .orange
+        UISegmentedControl.appearance().selectedSegmentTintColor = .orange
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.orange], for: .normal)
+//        UITabBar.appearance().backgroundColor = UIColor.orange
+        
         return true
     }
 

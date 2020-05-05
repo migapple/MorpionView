@@ -39,9 +39,15 @@ struct NavigationView: View {
                     audioPlayer?.stop()
                 }
             }
+            .accentColor(.orange)
+                
+                
             .onAppear {
                 guard let Retreive1 = UserDefaults.standard.value(forKey: "sliderValue") else { return }
                 self.settings.sliderValue = Float(Retreive1 as! CGFloat)
+                
+//                guard let Retreive2 = UserDefaults.standard.value(forKey: "soundActive") else { return }
+//                self.settings.soundActive = Bool(Retreive2 as! Bool)
             }
                 
         }

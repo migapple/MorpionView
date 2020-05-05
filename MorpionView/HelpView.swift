@@ -17,7 +17,7 @@ struct HelpView: View {
         }
         .onAppear(perform: {
             if self.settings.soundActive {
-            playSound(sound: "background-music", type: "mp3")
+                playSound(sound: "background-music", type: "mp3")
             }
         })
     }
