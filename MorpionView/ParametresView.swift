@@ -27,33 +27,42 @@ class Settings: ObservableObject {
 struct ParametresView: View {
     @EnvironmentObject var settings: Settings
     
+    let smbs = UIScreen.main.bounds.size
+    
     var body: some View {
-        VStack {
-            
-            Text("Parametrage")
-                .fontWeight(.black)
-            
-            Spacer()
-            
-            Slider(value: $settings.sliderValue, in: 3...6, step: 1)
-                .border(Color.green, width: 2)
+        ZStack {
+//            frame(width: smbs.width, height: smbs.height)
+            VStack {
+                
+                Text("parametrage")
+                    .fontWeight(.black)
+                    .font(.system(.title, design: .rounded))
+                    .padding()
+                
+                Spacer()
+                
+                Slider(value: $settings.sliderValue, in: 3...6, step: 1)
+                    .border(Color.green, width: 2)
+                    .padding()
+                
+                Text("nbre de cases : \(Int(settings.sliderValue)) X \(Int(settings.sliderValue))")
+                
+                
+                Toggle(isOn: $settings.soundActive) {
+                    Text(settings.soundActive ? "sons Actifs" : "sons Inactifs")
+                }
                 .padding()
-            
-            Text("Nbre de cases : \(Int(settings.sliderValue)) X \(Int(settings.sliderValue))")
-            
-            
-            Toggle(isOn: $settings.soundActive) {
-                Text(settings.soundActive ? "Sons Actifs" : "Sons Inactifs")
+                
+                Spacer()
             }
-            .padding()
-            
-            Spacer()
         }
+        .background(LinearGradient(gradient: Gradient(colors: [Color("OrangeLight"), Color(.orange)]), startPoint: .top, endPoint: .bottom))
     }
     
     struct ParametresView_Previews: PreviewProvider {
         static var previews: some View {
             ParametresView().environmentObject(Settings())
+             .environment(\.locale, .init(identifier: "en"))
         }
     }
 }

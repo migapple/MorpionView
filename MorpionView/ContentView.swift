@@ -113,7 +113,7 @@ struct ContentView: View {
         return VStack {
 //            .padding()
             Text("Tic Tac Toe")
-                .font(.largeTitle)
+                .font(.headline)
             Text(affichage)
                 .font(.headline)
             
@@ -176,6 +176,7 @@ struct ContentView: View {
                                 }
 
                             }) {
+                                // On dessine les pions
                                 HStack(spacing: 12) {
                                     if self.pion[line][raw].couleur == Color.orange {
                                     Image(self.pion[line][raw].place)
@@ -205,7 +206,7 @@ struct ContentView: View {
             // MARK: - Parametres
             HStack {
                 Toggle(isOn: quiDemarre) {
-                    Text(quiDemarre.wrappedValue ? "Ordinateur commence" : "Joueur commence")
+                    Text(quiDemarre.wrappedValue ? "Ordinateur \n commence" : "Joueur \n commence")
                 }
                 .padding()
                 
@@ -490,5 +491,6 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environmentObject(Settings())
         .previewDevice("iPhone SE")
+        .environment(\.locale, .init(identifier: "en"))
     }
 }

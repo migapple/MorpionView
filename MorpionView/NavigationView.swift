@@ -18,19 +18,19 @@ struct NavigationView: View {
                 ContentView()
                     .tabItem {
                         Image(systemName: "calendar")
-                        Text("Jeux")
+                        Text("jeux")
                 }
                 
                 ParametresView()
                     .tabItem {
                         Image(systemName: "gear")
-                        Text("Paramétrage")
+                        Text("parametrage")
                 }
                 
                 HelpView()
                     .tabItem {
                         Image(systemName: "questionmark.circle")
-                        Text("Aide")
+                        Text("aide")
                 }
                 .onAppear {
                     playSound(sound: "background-music", type: "mp3")
@@ -57,5 +57,7 @@ struct NavigationView: View {
 struct NavigationView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView().environmentObject(Settings())
+        .previewDevice("iPhone SE")
+        .environment(\.locale, .init(identifier: "en"))
     }
 }

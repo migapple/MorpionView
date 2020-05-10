@@ -1,0 +1,31 @@
+/* 
+  Localizable.strings
+  MorpionView
+
+  Created by Michel Garlandat on 10/05/2020.
+  Copyright © 2020 Michel Garlandat. All rights reserved.
+*/
+
+"parametrage" = "Settings";
+"nbre de cases :" = "Nbr of cases :";
+"sons Actifs" = "Actives Sounds";
+"sons Inactifs" = "Inactives Sounds";
+
+"Htext1" = "• You can play with a damier of 3 x 3 till damier of 6 X 6 .";
+"Htext2" = "• You can activate or desactivate the sound";
+"Htext3" = "• You can decide who plays first";
+"Htext4" = "• You play against the Computer";
+"Htext5" = "• You have 3 levels of games";
+"Htext6" = "• You can reset the dealing";
+
+"jeux" = "Game";
+"parametrage" = "Settings";
+"aide" = "Help";
+
+"Joueur" = "Player";
+"Ordi" = "Computer";
+"Facile" = "Easy";
+"Moyen" = "Medium";
+"Dur" = "Hard";
+"Jouer" = "Play";
+"Raz" = "Reset";
