@@ -15,11 +15,11 @@ struct HelpView: View {
         VStack {
             Text("Aide")
         }
-        .onAppear(perform: {
-            if self.settings.soundActive {
-                playSound(sound: "background-music", type: "mp3")
-            }
-        })
+//        .onAppear(perform: {
+//            if self.settings.soundActive {
+//                playSound(sound: "background-music", type: "mp3")
+//            }
+//        })
     }
 }
 

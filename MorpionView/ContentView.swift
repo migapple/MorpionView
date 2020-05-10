@@ -111,11 +111,12 @@ struct ContentView: View {
         
         // MARK: - Affichage Score
         return VStack {
+//            .padding()
             Text("Tic Tac Toe")
                 .font(.largeTitle)
             Text(affichage)
                 .font(.headline)
-                .padding()
+            
             HStack {
                 Text("Joueur: \(partiesJoueur)")
                     .font(.headline)
@@ -129,30 +130,51 @@ struct ContentView: View {
                     HStack {
                         ForEach(0..<nbLineRaw) { raw in
                             Button(action: {
-                                
+
                                 // On teste si quelqu'un a gagne
-                                self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
-                                
+                                    self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
+
                                 // Si le jeux est actif, le Joueur Joue
                                 if self.gameIsActive && self.quiJoue == false {
                                     self.joueurJoue(line:line, raw: raw, nbLineRaw: nbLineRaw)
-                                    
+
                                     // On teste si quelqu'un a gagne
                                     self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
+
+                                    if self.gameIsActive {
+                                        self.quiJoue = true
+                                    }
                                 }
-                                
+
                                 // Si le jeux est actif, l'ordinateur joue apres 1s
                                 if self.gameIsActive && self.quiJoue == true {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                                        let trouve = self.chercheCombinaison(joueur: 0, winComb: winComb, nbLineRaw: nbLineRaw)
+                                        var trouve = false
+
+                                        if self.selectionNiveau == 3  || self.selectionNiveau == 2 {
+                                            trouve = self.chercheCombinaison(joueur: 0, winComb: winComb, nbLineRaw: nbLineRaw)
+                                        }
+
+                                        if self.selectionNiveau == 2 {
+                                            if !trouve {
+                                                trouve = self.chercheCombinaison(joueur: 1, winComb: winComb, nbLineRaw: nbLineRaw)
+                                            }
+                                        }
+
                                         if !trouve {
                                             self.ordinateurJoueHasard(nbLineRaw: nbLineRaw)
                                         }
+
                                         // On teste si quelqu'un a gagne
                                         self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
+
+                                        if self.gameIsActive {
+                                            self.quiJoue = false
+                                        }
+
                                     })
                                 }
-                                
+
                             }) {
                                 HStack(spacing: 12) {
                                     if self.pion[line][raw].couleur == Color.orange {
@@ -177,7 +199,7 @@ struct ContentView: View {
                 }
             }
             .onDisappear{
-                self.raz(nbLineRaw: nbLineRaw)
+                self.raz(nbLineRaw: nbLineRaw, compteurs: true)
             }
             
             // MARK: - Parametres
@@ -197,37 +219,40 @@ struct ContentView: View {
                 .padding()
             }
             
-            if quiJoue == true {
-                Image(systemName: "desktopcomputer")
-                .resizable()
-                .frame(width: 40, height: 40)
-                    .foregroundColor(.orange)
-            }  else {
-                Image(systemName: "person.fill")
-                .resizable()
-                .frame(width: 40, height: 40)
-                .foregroundColor(.orange)
-
+            if gameIsActive {
+                if quiJoue == true {
+                    Image(systemName: "desktopcomputer")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.orange)
+                }  else {
+                    Image(systemName: "person.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.orange)
+                }
             }
-
             
             // MARK: - Jouer
             HStack {
                 // true si l'ordinateur demarre
                     Button(action: {
+                        // On efface les cases
+                        self.raz(nbLineRaw: nbLineRaw, compteurs: false)
+
                         // Ordinateur
-                        if self.quiDemarre1 == true && self.quiJoue == true {
+                        if self.quiDemarre1 == true {
                             self.gameIsActive = true
                             self.ordinateurJoueHasard(nbLineRaw: nbLineRaw)
                             self.quiJoue = false
-                            
+
                         } else {
                             self.quiJoue = false
                             self.gameIsActive = true
                         }
-                        
+
                         self.hidePlayButton = true
-                        
+
                     }) {
                         if !self.hidePlayButton {
                         Text("Jouer")
@@ -239,9 +264,9 @@ struct ContentView: View {
                             .cornerRadius(5)
                         }
                     }
-                
+
                 Button(action: {
-                    self.raz(nbLineRaw: nbLineRaw)
+                    self.raz(nbLineRaw: nbLineRaw, compteurs: true)
                     self.hidePlayButton = false
                 }) {
                     Text("Raz")
@@ -262,7 +287,7 @@ struct ContentView: View {
             self.pion[line][raw].place = "croix"
             self.joueur[line][raw] = "joueur"
             gameState[twoDimOneDim(line: line, raw: raw, nbLineRaw: nbLineRaw)] = .joueur
-            quiJoue = true
+//            quiJoue = true
         }
     }
     
@@ -272,7 +297,7 @@ struct ContentView: View {
             self.pion[line][raw].place = "rond"
             self.joueur[line][raw] = "ordi"
             gameState[twoDimOneDim(line: line, raw: raw, nbLineRaw: nbLineRaw)] = .ordi
-            quiJoue = false
+//            quiJoue = false
         }
     }
     
@@ -286,19 +311,21 @@ struct ContentView: View {
                 self.pion[lineR][rawR].place = "rond"
                 self.joueur[lineR][rawR] = "ordi"
                 gameState[twoDimOneDim(line: lineR, raw: rawR, nbLineRaw: nbLineRaw)] = .ordi
-                quiJoue = false
+//                quiJoue = false
                 break
             }
         }
     }
     
     // MARK: - RAZ
-    func raz(nbLineRaw: Int) {
+    func raz(nbLineRaw: Int, compteurs: Bool) {
         // On remet à 0 les case jouées
         gameState = [QuiJoue](repeating: .vide, count: 64)
         
-        self.partiesOrdi = 0
-        self.partiesJoueur = 0
+        if compteurs {
+            self.partiesOrdi = 0
+            self.partiesJoueur = 0
+        }
         
         for line in 0..<nbLineRaw {
             for raw in 0..<nbLineRaw {
@@ -327,12 +354,12 @@ struct ContentView: View {
             }
             
             if nbJoueur == nbLineRaw {
+                // On affiche les cases en vert
                 for i in 0..<nbLineRaw {
                     let indices = twoDim(nombre: combination[i], nbLineRaw: nbLineRaw)
-                    print(indices)
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
-                // Cross has won
+                
                 affichage = "Le Joueur gagné"
                  self.hidePlayButton = false
                 if settings.soundActive {
@@ -346,10 +373,9 @@ struct ContentView: View {
             } else if nbOrdi == nbLineRaw {
                 for i in 0..<nbLineRaw {
                     let indices = twoDim(nombre: combination[i], nbLineRaw: nbLineRaw)
-                    print(indices)
                     pion[indices.ind1][indices.ind2].couleur = .green
                 }
-                // Nought has won
+                
                 affichage = "L'Ordinateur a gagné"
                 self.hidePlayButton = false
                 if settings.soundActive {
@@ -381,6 +407,7 @@ struct ContentView: View {
                     playSound(sound: "game-over", type: "mp3")
                 }
                 self.hidePlayButton = false
+                gameIsActive = false
             }
         }
     }
@@ -417,17 +444,30 @@ struct ContentView: View {
         return (ind1, ind2)
     }
     
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - joueur: 0: Joueur, 1: Ordinateur
+    ///   - winComb: Tableau de combinaisons gagnantes
+    ///   - nbLineRaw: Nombre de lignes et de colonnes
+    /// - Returns: retour true si trouvé
     func chercheCombinaison(joueur: Int, winComb: [[Int]], nbLineRaw: Int) -> Bool {
         var trouve = false
         
         for combination in winComb {
             // Une conbinaison trouvée
             var nbState = 0
-
+            
             for index in 0..<nbLineRaw {
-                if gameState[combination[index]] == .ordi { nbState += 1}
+                if joueur == 1 {
+                    if gameState[combination[index]] == .ordi { nbState += 1}
+                }
+                
+                if joueur == 0 {
+                    if gameState[combination[index]] == .joueur { nbState += 1}
+                }
             }
-
+            
             // Ligne presque terminée
             if nbState == nbLineRaw - 1 {
                 var j = 0
@@ -449,5 +489,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environmentObject(Settings())
+        .previewDevice("iPhone SE")
     }
 }
