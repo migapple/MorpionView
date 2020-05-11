@@ -12,11 +12,11 @@ struct HelpView: View {
     @EnvironmentObject var settings: Settings
     @State private var showIcon = false
     
-    var slideInAnimation: Animation {
-        Animation.spring(response: 1.5, dampingFraction: 0.5, blendDuration: 0.5)
-        .speed(1)
-        .delay(0.25)
-    }
+//    var slideInAnimation: Animation {
+//        Animation.spring(response: 1.5, dampingFraction: 0.5, blendDuration: 0.5)
+//        .speed(1)
+//        .delay(0.25)
+//    }
     
     var body: some View {
         VStack {
@@ -42,17 +42,18 @@ struct HelpView: View {
         .background(LinearGradient(gradient: Gradient(colors: [Color("OrangeLight"), Color(.orange)]), startPoint: .top, endPoint: .bottom))
         .cornerRadius(10)
         .shadow(radius: 10)
-//        .onAppear(perform: {
-//            if self.settings.soundActive {
-//                playSound(sound: "background-music", type: "mp3")
-//            }
-//        })
+        .onAppear(perform: {
+            if self.settings.soundActive {
+                playSound(sound: "background-music", type: "mp3")
+            }
+        })
             
             Text("© 2010  Michel Garlandat")
             .padding()
         }
         .onDisappear {
             self.showIcon.toggle()
+            audioPlayer?.stop()
         }
             
         .animation(slideInAnimation)

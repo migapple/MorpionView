@@ -68,6 +68,7 @@ struct ContentView: View {
     @State private var gameIsActive = true
     @State private var gameState = [QuiJoue](repeating: .vide, count: 64)
     @State var hidePlayButton = false
+    @State private var showIcon = false
     
     let smbs = UIScreen.main.bounds.size
     
@@ -116,6 +117,7 @@ struct ContentView: View {
                 .font(.headline)
             Text(affichage)
                 .font(.headline)
+                
             
             HStack {
                 Text("joueur \(partiesJoueur)")
@@ -179,12 +181,14 @@ struct ContentView: View {
                                 // On dessine les pions
                                 HStack(spacing: 12) {
                                     if self.pion[line][raw].couleur == Color.orange {
+                                        if self.showIcon {
                                     Image(self.pion[line][raw].place)
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
                                         .frame(width: (self.smbs.width - 50) / CGFloat(nbLineRaw) , height: (self.smbs.width - 50) / CGFloat(nbLineRaw))
                                         .background(Color.orange)
+                                        }
                                     } else {
                                         Image(self.pion[line][raw].place)
                                         .renderingMode(.original)
@@ -199,9 +203,25 @@ struct ContentView: View {
                     }
                 }
             }
-            .onDisappear{
-                self.raz(nbLineRaw: nbLineRaw, compteurs: true)
+            .onAppear {
+                withAnimation {
+                    self.showIcon.toggle()
+                }
             }
+                
+            .onDisappear {
+                self.raz(nbLineRaw: nbLineRaw, compteurs: true)
+                self.showIcon.toggle()
+            }
+            
+            .overlay(
+                    VStack {
+                    Image("Tic-Tac-Toe")
+                        .offset(x: -135, y: showIcon ? -90 : -400)
+                        .animation(slideInAnimation)
+                        Spacer()
+                    }
+            )
             
             // MARK: - Parametres
             HStack {

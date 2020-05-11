@@ -32,12 +32,6 @@ struct NavigationView: View {
                         Image(systemName: "questionmark.circle")
                         Text("aide")
                 }
-                .onAppear {
-                    playSound(sound: "background-music", type: "mp3")
-                }
-                .onDisappear {
-                    audioPlayer?.stop()
-                }
             }
             .accentColor(.orange)
                 
