@@ -8,6 +8,12 @@
 
 import SwiftUI
 
+var slideInAnimation: Animation {
+       Animation.spring(response: 1.5, dampingFraction: 0.5, blendDuration: 0.5)
+       .speed(1)
+       .delay(0.25)
+}
+
 class Settings: ObservableObject {
     @Published var sliderValue: Float = UserDefaults.standard.float(forKey: "sliderValue") {
         didSet {
@@ -26,14 +32,24 @@ class Settings: ObservableObject {
 
 struct ParametresView: View {
     @EnvironmentObject var settings: Settings
+     @State private var showIcon = false
     
     let smbs = UIScreen.main.bounds.size
     
     var body: some View {
-        ZStack {
-//            frame(width: smbs.width, height: smbs.height)
-            VStack {
+        VStack {
+            Text("Tic-Tac-Toe")
+                .font(.system(.title, design: .serif))
+                .multilineTextAlignment(.center)
+            
                 
+                Image("Tic-Tac-Toe")
+                .offset(x: 0, y: showIcon ? 0 : 75)
+                .animation(slideInAnimation)
+                    
+                .padding()
+                
+            VStack {
                 Text("parametrage")
                     .fontWeight(.black)
                     .font(.system(.title, design: .rounded))
@@ -45,8 +61,8 @@ struct ParametresView: View {
                     .border(Color.green, width: 2)
                     .padding()
                 
-                Text("nbre de cases : \(Int(settings.sliderValue)) X \(Int(settings.sliderValue))")
-                
+                Text("nbre de cases \(Int(settings.sliderValue)) X \(Int(settings.sliderValue))")
+//                Text("nbre de cases \(Int(settings.sliderValue))")
                 
                 Toggle(isOn: $settings.soundActive) {
                     Text(settings.soundActive ? "sons Actifs" : "sons Inactifs")
@@ -55,8 +71,22 @@ struct ParametresView: View {
                 
                 Spacer()
             }
+            .frame(width: 350, height: 400)
+            .foregroundColor(.white)
+            .background(LinearGradient(gradient: Gradient(colors: [Color("OrangeLight"), Color(.orange)]), startPoint: .top, endPoint: .bottom))
+            .cornerRadius(10)
+            .shadow(radius: 10)
+            
+            .onDisappear {
+                self.showIcon.toggle()
+            }
+                
+            .animation(slideInAnimation)
+                .onAppear {
+                    self.showIcon.toggle()
+                }
+            }
         }
-        .background(LinearGradient(gradient: Gradient(colors: [Color("OrangeLight"), Color(.orange)]), startPoint: .top, endPoint: .bottom))
     }
     
     struct ParametresView_Previews: PreviewProvider {
@@ -65,4 +95,4 @@ struct ParametresView: View {
              .environment(\.locale, .init(identifier: "en"))
         }
     }
-}
+

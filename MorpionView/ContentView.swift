@@ -118,9 +118,9 @@ struct ContentView: View {
                 .font(.headline)
             
             HStack {
-                Text("Joueur: \(partiesJoueur)")
+                Text("joueur \(partiesJoueur)")
                     .font(.headline)
-                Text("Ordi: \(partiesOrdi)")
+                Text("ordi \(partiesOrdi)")
                     .font(.headline)
             }
             
@@ -206,7 +206,9 @@ struct ContentView: View {
             // MARK: - Parametres
             HStack {
                 Toggle(isOn: quiDemarre) {
-                    Text(quiDemarre.wrappedValue ? "Ordinateur \n commence" : "Joueur \n commence")
+                    Text(quiDemarre.wrappedValue ? "ordinateur \n commence" : "joueur \n commence")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color.orange)
                 }
                 .padding()
                 

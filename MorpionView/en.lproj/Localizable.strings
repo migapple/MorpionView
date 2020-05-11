@@ -7,7 +7,8 @@
 */
 
 "parametrage" = "Settings";
-"nbre de cases :" = "Nbr of cases :";
+"nbre de cases %lld X %lld" = "nbr of cases %lld X %lld";
+
 "sons Actifs" = "Actives Sounds";
 "sons Inactifs" = "Inactives Sounds";
 
@@ -29,3 +30,10 @@
 "Dur" = "Hard";
 "Jouer" = "Play";
 "Raz" = "Reset";
+
+"joueur %lld" = "Player: %lld";
+"ordi %lld" = "Computer: %lld";
+
+"ordinateur \n commence" = "Computer \n starts";
+"joueur \n commence" = "Player \n starts";
+

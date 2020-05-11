@@ -51,12 +51,15 @@ struct HelpView: View {
             Text("© 2010  Michel Garlandat")
             .padding()
         }
+        .onDisappear {
+            self.showIcon.toggle()
+        }
+            
         .animation(slideInAnimation)
             .onAppear {
                 self.showIcon.toggle()
             }
         }
-        
     }
 
 

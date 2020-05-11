@@ -41,7 +41,6 @@ struct NavigationView: View {
             }
             .accentColor(.orange)
                 
-                
             .onAppear {
                 guard let Retreive1 = UserDefaults.standard.value(forKey: "sliderValue") else { return }
                 self.settings.sliderValue = Float(Retreive1 as! CGFloat)

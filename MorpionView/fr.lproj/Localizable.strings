@@ -7,7 +7,8 @@
 */
 
 "parametrage" = "Parametrage";
-"nbre de cases :%@" = "nbre de cases :%@";
+"nbre de cases %lld X %lld" = "nbre de cases %lld X %lld";
+
 "sons Actifs" = "Sons Actifs";
 "sons Inactifs" = "Sons Inactifs";
 
@@ -29,3 +30,9 @@
 "Dur" = "Dur";
 "Jouer" = "Jouer";
 "Raz" = "Raz";
+
+"joueur %lld" = "Joueur: %lld";
+"ordi %lld" = "Ordi: %lld";
+
+"ordinateur \n commence" = "Ordinateur \n commence";
+"joueur \n commence" = "Joueur \n commence";
