@@ -32,7 +32,7 @@ import SwiftUI
 
 struct ParametresView: View {
     @EnvironmentObject var settings: Settings
-     @State private var showIcon = false
+    @State private var showIcon = false
     
     let smbs = UIScreen.main.bounds.size
     

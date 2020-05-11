@@ -36,13 +36,12 @@ struct NavigationView: View {
             .accentColor(.orange)
                 
             .onAppear {
-                guard let Retreive1 = UserDefaults.standard.value(forKey: "sliderValue") else { return }
-                self.settings.sliderValue = Float(Retreive1 as! CGFloat)
-                
-//                guard let Retreive2 = UserDefaults.standard.value(forKey: "soundActive") else { return }
-//                self.settings.soundActive = Bool(Retreive2 as! Bool)
+                if let retreive1 = UserDefaults.standard.value(forKey: "sliderValue") {
+                    self.settings.sliderValue = Float(retreive1 as! CGFloat)
+                } else {
+                    self.settings.sliderValue = 3
+                }
             }
-                
         }
     }
 }
