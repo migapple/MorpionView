@@ -186,7 +186,7 @@ struct ContentView: View {
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
-                                        .frame(width: (self.smbs.width - 50) / CGFloat(nbLineRaw) , height: (self.smbs.width - 50) / CGFloat(nbLineRaw))
+                                        .frame(width: (self.smbs.width - 80) / CGFloat(nbLineRaw) , height: (self.smbs.width - 80) / CGFloat(nbLineRaw))
                                         .background(Color.orange)
                                         }
                                     } else {
@@ -194,15 +194,17 @@ struct ContentView: View {
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
-                                        .frame(width: (self.smbs.width - 50) / CGFloat(nbLineRaw) , height: (self.smbs.width - 50) / CGFloat(nbLineRaw))
+                                        .frame(width: (self.smbs.width - 80) / CGFloat(nbLineRaw) , height: (self.smbs.width - 80) / CGFloat(nbLineRaw))
                                         .background(Color.green)
                                     }
                                 }
+                                .frame(maxWidth: 640)
                             }
                         }
                     }
                 }
             }
+                
             .onAppear {
                 withAnimation {
                     self.showIcon.toggle()
@@ -217,7 +219,7 @@ struct ContentView: View {
             .overlay(
                     VStack {
                     Image("Tic-Tac-Toe")
-                        .offset(x: -135, y: showIcon ? -90 : -400)
+                        .offset(x: -135, y: showIcon ? -80 : -400)
                         .animation(slideInAnimation)
                         Spacer()
                     }
@@ -301,6 +303,7 @@ struct ContentView: View {
                         .cornerRadius(5)
                 }
             }
+            .padding(.bottom, 20)
         }
     }
     
