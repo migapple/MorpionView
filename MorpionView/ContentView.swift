@@ -115,7 +115,6 @@ struct ContentView: View {
         
         // MARK: - Affichage Score
         return VStack {
-//            .padding()
             Text("Tic Tac Toe")
                 .font(.headline)
             Text(affichage)
@@ -179,25 +178,31 @@ struct ContentView: View {
                             }) {
                                 // On dessine les pions
                                 HStack(spacing: 12) {
+                                    // Cases normales
                                     if self.pion[line][raw].couleur == Color.orange {
                                         if self.showIcon {
                                     Image(self.pion[line][raw].place)
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
-                                        .frame(width: (self.geoWidth - 80) / CGFloat(nbLineRaw) , height: (self.geoHeight - 320) / CGFloat(nbLineRaw))
+//                                        .frame(width: (self.geoHeight - 320) / CGFloat(nbLineRaw) , height: (self.geoHeight - 320) / CGFloat(nbLineRaw))
                                         .background(Color.orange)
+                                            .padding(5)
                                         }
                                     } else {
+                                        // Cases gagnées
                                         Image(self.pion[line][raw].place)
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
-                                        .frame(width: (self.geoWidth - 80) / CGFloat(nbLineRaw) , height: (self.geoHeight - 320) / CGFloat(nbLineRaw))
+//                                        .frame(width: (self.geoWidth - 80) / CGFloat(nbLineRaw) , height: (self.geoHeight - 320) / CGFloat(nbLineRaw))
                                         .background(Color.green)
+                                        .padding(5)
                                     }
                                 }
-                                .frame(maxWidth: 640)
+//                            .padding(5)
+                                .frame(maxWidth: 100)
+                                .frame(maxHeight: 100)
                             }
                         }
                     }
@@ -218,7 +223,7 @@ struct ContentView: View {
             .overlay(
                     VStack {
                     Image("Tic-Tac-Toe")
-                        .offset(x: -135, y: showIcon ? -80 : -400)
+                        .offset(x: -140, y: showIcon ? -80 : -400)
                         .animation(slideInAnimation)
                         Spacer()
                     }
@@ -227,7 +232,7 @@ struct ContentView: View {
             // MARK: - Parametres
             HStack {
                 Toggle(isOn: quiDemarre) {
-                    Text(quiDemarre.wrappedValue ? "ordinateur \n commence" : "joueur \n commence")
+                    Text(quiDemarre.wrappedValue ? "ordinateur \ncommence" : "joueur \ncommence")
                         .font(.system(size: 16))
                         .foregroundColor(Color.orange)
                 }
@@ -511,7 +516,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(geoHeight: 640, geoWidth: 480).environmentObject(Settings())
+        ContentView(geoHeight: 414, geoWidth: 896).environmentObject(Settings())
         .previewDevice("iPhone SE")
         .environment(\.locale, .init(identifier: "en"))
     }

@@ -34,6 +34,6 @@
 "joueur %lld" = "Player: %lld";
 "ordi %lld" = "Computer: %lld";
 
-"ordinateur \n commence" = "Computer \n starts";
-"joueur \n commence" = "Player \n starts";
+"ordinateur \ncommence" = "Computer \nstarts";
+"joueur \ncommence" = "Player \nstarts";
 
