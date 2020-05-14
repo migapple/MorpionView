@@ -305,6 +305,7 @@ struct ContentView: View {
             }
             .padding(.bottom, 20)
         }
+//        .environment(\.horizontalSizeClass, .compact)
     }
     
     // MARK: - Joueur
