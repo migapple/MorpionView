@@ -55,6 +55,8 @@ var pris = [
 
 struct ContentView: View {
     @EnvironmentObject var settings: Settings
+    var geoHeight: CGFloat
+    var geoWidth: CGFloat
     @State var pion = damier
     @State var joueur = pris
     @State private var affichage = ""
@@ -73,6 +75,7 @@ struct ContentView: View {
     let smbs = UIScreen.main.bounds.size
     
     var body: some View {
+        
         let nbLineRaw = Int(settings.sliderValue)
         
         // On modifie qui joue en fonction de qui demarre
@@ -117,7 +120,6 @@ struct ContentView: View {
                 .font(.headline)
             Text(affichage)
                 .font(.headline)
-                
             
             HStack {
                 Text("joueur \(partiesJoueur)")
@@ -132,7 +134,6 @@ struct ContentView: View {
                     HStack {
                         ForEach(0..<nbLineRaw) { raw in
                             Button(action: {
-
                                 // On teste si quelqu'un a gagne
                                     self.quiAGagne(line:line, raw: raw, nbLineRaw: nbLineRaw, winComb: winComb)
 
@@ -173,10 +174,8 @@ struct ContentView: View {
                                         if self.gameIsActive {
                                             self.quiJoue = false
                                         }
-
                                     })
                                 }
-
                             }) {
                                 // On dessine les pions
                                 HStack(spacing: 12) {
@@ -186,7 +185,7 @@ struct ContentView: View {
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
-                                        .frame(width: (self.smbs.width - 80) / CGFloat(nbLineRaw) , height: (self.smbs.width - 80) / CGFloat(nbLineRaw))
+                                        .frame(width: (self.geoWidth - 80) / CGFloat(nbLineRaw) , height: (self.geoHeight - 320) / CGFloat(nbLineRaw))
                                         .background(Color.orange)
                                         }
                                     } else {
@@ -194,7 +193,7 @@ struct ContentView: View {
                                         .renderingMode(.original)
                                         .resizable()
                                         .padding(5)
-                                        .frame(width: (self.smbs.width - 80) / CGFloat(nbLineRaw) , height: (self.smbs.width - 80) / CGFloat(nbLineRaw))
+                                        .frame(width: (self.geoWidth - 80) / CGFloat(nbLineRaw) , height: (self.geoHeight - 320) / CGFloat(nbLineRaw))
                                         .background(Color.green)
                                     }
                                 }
@@ -467,10 +466,8 @@ struct ContentView: View {
             ind1 = 5
             ind2 = nombre - nbLineRaw * 5
         }
-        
         return (ind1, ind2)
     }
-    
     
     /// <#Description#>
     /// - Parameters:
@@ -508,14 +505,13 @@ struct ContentView: View {
                 }
             }
         }
-        
         return trouve
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environmentObject(Settings())
+        ContentView(geoHeight: 640, geoWidth: 480).environmentObject(Settings())
         .previewDevice("iPhone SE")
         .environment(\.locale, .init(identifier: "en"))
     }

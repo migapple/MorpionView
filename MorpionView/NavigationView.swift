@@ -12,36 +12,41 @@ struct NavigationView: View {
     @EnvironmentObject var settings: Settings
     
     var body: some View {
-        VStack {
-            
-            TabView {
-                ContentView()
-                    .tabItem {
-                        Image(systemName: "calendar")
-                        Text("jeux")
+        GeometryReader { geo in
+            VStack {
+                TabView {
+                    ContentView(geoHeight: geo.size.height, geoWidth: geo.size.width)
+                        .tabItem {
+                            Image(systemName: "calendar")
+                            Text("jeux")
+                    }
+                    
+                    ParametresView()
+                        .tabItem {
+                            Image(systemName: "gear")
+                            Text("parametrage")
+                    }
+                    
+                    HelpView()
+                        .tabItem {
+                            Image(systemName: "questionmark.circle")
+                            Text("aide")
+                    }
+                }
+                .accentColor(.orange)
+                    
+                .onAppear {
+                    if let retreive1 = UserDefaults.standard.value(forKey: "sliderValue") {
+                        self.settings.sliderValue = Float(retreive1 as! CGFloat)
+                    } else {
+                        self.settings.sliderValue = 3
+                    }
                 }
                 
-                ParametresView()
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("parametrage")
-                }
-                
-                HelpView()
-                    .tabItem {
-                        Image(systemName: "questionmark.circle")
-                        Text("aide")
-                }
+//                Text("\(geo.size.width)")
+//                Text("\(geo.size.height)")
             }
-            .accentColor(.orange)
-                
-            .onAppear {
-                if let retreive1 = UserDefaults.standard.value(forKey: "sliderValue") {
-                    self.settings.sliderValue = Float(retreive1 as! CGFloat)
-                } else {
-                    self.settings.sliderValue = 3
-                }
-            }
+        
         }
     }
 }
