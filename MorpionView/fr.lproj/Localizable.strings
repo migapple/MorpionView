@@ -13,11 +13,11 @@
 "sons Inactifs" = "Sons Inactifs";
 
 "Htext1" = "• Vous pouvez jouer sur un damier de 3 x 3  a un damier de 6 X 6 .";
-"Htext2" = "• Vous pouvez activer ou déactiver le son";
+"Htext2" = "• Vous pouvez activer ou désactiver le son";
 "Htext3" = "• Vous pouvez décider qui commence le jeux";
 "Htext4" = "• Vous jouez contre l'ordinateur";
 "Htext5" = "• Vous avez 3 niveaux de jeux";
-"Htext6" = "• Vous pouvez remettre à zéro de décompte des points";
+"Htext6" = "• Vous pouvez remettre à zéro le décompte des points";
 
 "jeux" = "Jeux";
 "parametrage" = "Paramétrage";

@@ -48,7 +48,7 @@ struct HelpView: View {
             }
         })
             
-            Text("© 2010  Michel Garlandat")
+            Text("© 2020  Michel Garlandat")
             .padding()
         }
         .onDisappear {
